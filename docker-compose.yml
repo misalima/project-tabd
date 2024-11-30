@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432" # Expose the database port
+    environment:
+      POSTGRES_USER: tabd_user        # Set the database username
+      POSTGRES_PASSWORD: password # Set the database password
+      POSTGRES_DB: tabd_db       # Set the database name
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persist data locally
+
+volumes:
+  db_data:
