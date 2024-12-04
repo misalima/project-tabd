@@ -5,13 +5,13 @@ services:
     image: postgres:15
     container_name: postgres
     ports:
-      - "5432:5432" # Expose the database port
+      - "${PG_PORT}:5432"
     environment:
-      POSTGRES_USER: tabd_user        # Set the database username
-      POSTGRES_PASSWORD: password # Set the database password
-      POSTGRES_DB: tabd_db       # Set the database name
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_NAME}
     volumes:
-      - db_data:/var/lib/postgresql/data # Persist data locally
+      - db_data:/var/lib/postgresql/data
 
 volumes:
   db_data:
