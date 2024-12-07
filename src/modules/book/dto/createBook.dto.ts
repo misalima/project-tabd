@@ -1,4 +1,4 @@
-import {IsDate, IsNotEmpty, IsOptional, IsString} from "class-validator";
+import {IsNotEmpty, IsString} from "class-validator";
 
 export class CreateBookDto {
     @IsNotEmpty({message: 'Title is required'})
@@ -17,7 +17,7 @@ export class CreateBookDto {
     @IsString({message: 'Description must be a string'})
     description: string;
 
-    @IsNotEmpty({ message: 'Published at is required' })
-    @IsDate({ message: 'Published at must be a date' })
-    publishedAt?: Date;
+    @IsNotEmpty({message: 'Published at is required'})
+    @IsString({message: 'Published at must be a string'})
+    publishedAt: string;
 }
