@@ -22,7 +22,7 @@ model Book {
   author      String
   genre       String
   description String
-  publishedAt DateTime
+  publishedAt String
   reviews     Review[]
   history     History[]
   createdAt   DateTime  @default(now())
