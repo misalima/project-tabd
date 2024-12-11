@@ -8,41 +8,31 @@ datasource db {
 }
 
 model User {
-  id          String    @id @default(uuid())
-  email       String    @unique
-  username    String    @unique
+  id          String   @id @default(uuid())
+  email       String   @unique
+  username    String   @unique
   preferences String[]
   reviews     Review[]
-  history     History[]
+  readBooks   Book[]   @relation("ReadBooks")
 }
 
 model Book {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   author      String
   genre       String
   description String
   publishedAt String
   reviews     Review[]
-  history     History[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  readers     User[]   @relation("ReadBooks")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Review {
   id        String   @id @default(uuid())
   rating    Int
   comment   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  book      Book     @relation(fields: [bookId], references: [id])
-  bookId    String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-}
-
-model History {
-  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   book      Book     @relation(fields: [bookId], references: [id])
