@@ -29,6 +29,20 @@ export class ReviewsService {
     });
   }
 
+  async getReviewByBookId(bookId: string) {
+    return this.prisma.review.findMany({
+      where: { bookId },
+      include: { book: true, user: true },
+    });
+  }
+
+  async getReviewByUserId(userId: string) {
+    return this.prisma.review.findMany({
+      where: { userId },
+      include: { book: true, user: true },
+    });
+  }
+
   // Update a review by ID
   async updateReview(id: string, updateReviewDto: UpdateReviewDto) {
     return this.prisma.review.update({
