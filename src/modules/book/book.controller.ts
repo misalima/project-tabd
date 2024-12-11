@@ -18,6 +18,16 @@ export class BookController {
         return this.bookService.getBookById(id);
     }
 
+    @Get('title/:title')
+    async getBookByTitle(@Param('title') title: string) {
+        return this.bookService.getBookByTitle(title);
+    }
+
+    @Get('genre/:genre')
+    async getBookByGenre(@Param('genre') genre: string) {
+        return this.bookService.getBookByGenre(genre);
+    }
+
     @Post()
     async createBook(@Body() data: CreateBookDto) {
         return this.bookService.createBook(data);
