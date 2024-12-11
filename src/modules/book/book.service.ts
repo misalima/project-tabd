@@ -17,6 +17,18 @@ export class BookService {
         });
     }
 
+    async getBookByTitle(title: string) {
+        return this.prismaService.book.findFirst({
+            where: {title}
+        });
+    }
+
+    async getBookByGenre(genre: string) {
+        return this.prismaService.book.findMany({
+            where: {genre}
+        });
+    }
+
     async createBook(data: CreateBookDto) {
         return this.prismaService.book.create({
             data:{
