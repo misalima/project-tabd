@@ -11,7 +11,7 @@ import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/createReview.dto';
 import { UpdateReviewDto } from './dto/updateReview.dto';
 
-@Controller('reviews')
+@Controller('api/review')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
@@ -28,6 +28,16 @@ export class ReviewsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.reviewsService.getReviewById(id);
+  }
+
+  @Get('book/:bookId')
+  async findByBookId(@Param('bookId') bookId: string) {
+      return this.reviewsService.getReviewByBookId(bookId);
+  }
+
+  @Get('user/:userId')
+  async findByUserId(@Param('userId') userId: string) {
+      return this.reviewsService.getReviewByUserId(userId);
   }
 
   @Patch(':id')
