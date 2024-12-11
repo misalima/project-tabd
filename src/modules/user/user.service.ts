@@ -27,6 +27,18 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
+  async findReadBooks(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+        include: { readBooks: {
+          select: {
+            title: true,
+          }
+        }
+      }
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({ where: { id }, data: updateUserDto });
   }
