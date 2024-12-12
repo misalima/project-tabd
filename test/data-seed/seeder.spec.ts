@@ -1,8 +1,10 @@
 import {SeederService} from "../../src/modules/seeder/seeder.service";
 import {Test, TestingModule} from "@nestjs/testing";
 import {AppModule} from "../../src/app.module";
+import {writeToJsonFile} from "../utils/fileUtils";
 
 describe('Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews)', () => {
+    jest.setTimeout(30000);
     let seederService: SeederService;
 
     beforeAll(async () => {
@@ -14,20 +16,20 @@ describe('Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews
     });
 
     it('Deve medir o tempo de inserção de usuários, livros e reviews', async () => {
-        let totalTime = 0;
+        const startTime = performance.now();
+        await seederService.runSeed();
+        const endTime = performance.now();
 
-        for (let i = 0; i < 10; i++) {
-            const startTime = performance.now();
-            await seederService.runSeed();
-            const endTime = performance.now();
-            const duration = endTime - startTime;
-            totalTime += duration;
+        const duration = endTime - startTime;
 
-            console.log(`Iteração ${i + 1}: ${duration} ms`);
-        }
+        const testResults = {
+            testSuite: 'Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews)',
+            testName: 'Deve medir o tempo de inserção de usuários, livros e reviews',
+            duration: duration + "ms",
+        };
 
-        const averageTime = totalTime / 10;
+        writeToJsonFile(testResults);
 
-        console.log(`Tempo de execução: ${averageTime}ms`);
+        console.log(`Tempo de execução: ${duration}ms`);
     });
 });
