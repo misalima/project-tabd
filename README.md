@@ -45,18 +45,16 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
-## Run tests
+## Run performance tests
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+# performance tests
+$ npx jest --config test/jest-e2e.json
 ```
+
+### View the test results
+
+The performance test results will be stored in the test folder in the performance_results.json file. The file contains execution times for each operation, such as inserts and queries, allowing you to perform a detailed analysis of your system's performance.
 
 ## Deployment
 
