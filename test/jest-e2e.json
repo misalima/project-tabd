@@ -2,7 +2,13 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testMatch": [
+    "**/test/data-seed/*.test.ts",
+    "**/test/data-seed/*.spec.ts",
+    "**/test/data-query/*.test.ts",
+    "**/test/data-query/*.spec.ts"
+  ],
+
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }

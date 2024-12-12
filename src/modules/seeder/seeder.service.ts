@@ -2,7 +2,6 @@ import {Injectable} from "@nestjs/common";
 import {PrismaService} from "../../prisma.service";
 import { faker } from '@faker-js/faker';
 
-
 @Injectable()
 export class SeederService {
     constructor(private readonly prismaService: PrismaService) {}
@@ -54,8 +53,7 @@ export class SeederService {
             data: reviews,
         });
     }
-
-
+    
     async runSeed() {
         await this.seedUsers();
         await this.seedBooks();
