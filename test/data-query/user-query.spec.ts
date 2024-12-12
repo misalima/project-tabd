@@ -1,7 +1,7 @@
 import {Test} from "@nestjs/testing";
 import {AppModule} from "../../src/app.module";
 import * as request from "supertest";
-
+import {writeToJsonFile} from "../utils/fileUtils";
 
 describe('Teste de Performance - Consulta de Dados (Usuários)', () => {
     let app;
@@ -17,6 +17,7 @@ describe('Teste de Performance - Consulta de Dados (Usuários)', () => {
 
     it('Deve medir o tempo de consulta de usuários', async () => {
         let totalTime = 0;
+        const details = [];
 
         for (let i = 0; i < 10; i++) {
             const startTime = performance.now();
@@ -26,10 +27,22 @@ describe('Teste de Performance - Consulta de Dados (Usuários)', () => {
             const duration = endTime - startTime;
             totalTime += duration;
 
-            console.log(`Iteração ${i + 1}: ${duration} ms`);
+            details.push({iteration: i + 1, duration: duration + "ms"});
+
+            console.log(`Iteração ${i + 1}: ${duration}ms`);
         }
 
         const averageTime = totalTime / 10;
+
+        const testResults = {
+            testSuite: 'Teste de Performance - Consulta de Dados (Usuários)',
+            testName: 'Deve medir o tempo de consulta de usuários',
+            averageTime: averageTime + "ms",
+            details: details
+        };
+
+        writeToJsonFile(testResults);
+
         console.log(`Tempo de execução: ${averageTime}ms`);
     });
 })
