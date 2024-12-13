@@ -3,40 +3,42 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   email       String   @unique
   username    String   @unique
   preferences String[]
   reviews     Review[]
-  readBooks   Book[]   @relation("ReadBooks")
+  readBooksIDs String[] @db.ObjectId 
+  readBooks   Book[]  @relation(fields: [readBooksIDs], references: [id])
 }
 
 model Book {
-  id          String   @id @default(uuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   author      String
   genre       String
   description String
   publishedAt String
   reviews     Review[]
-  readers     User[]   @relation("ReadBooks")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  readersIDs String[] @db.ObjectId
+  readers     User[]  @relation(fields: [readersIDs], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 }
 
 model Review {
-  id        String   @id @default(uuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   rating    Int
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   book      Book     @relation(fields: [bookId], references: [id])
-  bookId    String
+  bookId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
-  userId    String
+  userId    String   @db.ObjectId
 }
