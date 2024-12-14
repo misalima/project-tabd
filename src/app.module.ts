@@ -7,7 +7,8 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SeederModule } from './modules/seeder/seeder.module';
 import {MongoModule} from "./modules/mongo/mongo.module";
 import { ConfigModule } from '@nestjs/config';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 const redisStore = require('cache-manager-redis-store').redisStore;
 
@@ -20,6 +21,7 @@ const redisStore = require('cache-manager-redis-store').redisStore;
         port: 6379,
       },
       isGlobal: true,
+      ttl: 60000,
     }),
     ConfigModule.forRoot({
       isGlobal: true, // Make the module global
@@ -31,6 +33,12 @@ const redisStore = require('cache-manager-redis-store').redisStore;
     UserModule,
     ReviewsModule,
     SeederModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor, 
+      }
   ],
 })
 export class AppModule {}
