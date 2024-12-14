@@ -19,6 +19,7 @@ const redisStore = require('cache-manager-redis-store').redisStore;
         host: 'localhost',
         port: 6379,
       },
+      isGlobal: true,
     }),
     ConfigModule.forRoot({
       isGlobal: true, // Make the module global

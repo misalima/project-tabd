@@ -1,27 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
 import { faker } from '@faker-js/faker';
-import {BookDocument, ReviewDocument, UserDocument} from "../../../mongodb/schema";
+import {
+  BookDocument,
+  ReviewDocument,
+  UserDocument,
+} from '../../../mongodb/schema';
 
 @Injectable()
 export class SeederService {
   constructor(
-      @InjectModel('User') private readonly userModel: Model<UserDocument>,
-      @InjectModel('Book') private readonly bookModel: Model<BookDocument>,
-      @InjectModel('Review') private readonly reviewModel: Model<ReviewDocument>,
+    @InjectModel('User') private readonly userModel: Model<UserDocument>,
+    @InjectModel('Book') private readonly bookModel: Model<BookDocument>,
+    @InjectModel('Review') private readonly reviewModel: Model<ReviewDocument>,
   ) {}
 
   async seedUsers() {
     await this.userModel.deleteMany();
     await this.reviewModel.deleteMany();
 
-    const users = Array.from({ length: 10000 }).map(() => ({
-      username: faker.internet.username(),
-      email: faker.internet.email(),
-      preferences: [faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror'])],
-    }));
+    const users = [];
+    const emails = new Set();
+    const usernames = new Set();
+
+    while (users.length < 10000) {
+      let username = faker.internet.username();
+      let email = faker.internet.email();
+
+      // Ensure unique username
+      while (usernames.has(username)) {
+        username = faker.internet.username();
+      }
+      usernames.add(username);
+
+      // Ensure unique email
+      while (emails.has(email)) {
+        email = faker.internet.email();
+      }
+      emails.add(email);
+
+      users.push({
+        username,
+        email,
+        preferences: [
+          faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror']),
+        ],
+      });
+    }
 
     await this.userModel.insertMany(users);
     console.log('Users seeded successfully');
@@ -33,7 +59,12 @@ export class SeederService {
     const books = Array.from({ length: 10000 }).map(() => ({
       title: faker.commerce.productName(),
       author: faker.person.firstName(),
-      genre: faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror']),
+      genre: faker.helpers.arrayElement([
+        'action',
+        'comedy',
+        'drama',
+        'horror',
+      ]),
       description: faker.lorem.paragraph(),
       publishedAt: faker.date.past().toString(),
     }));
