@@ -1,52 +1,20 @@
 import {Injectable} from "@nestjs/common";
-import {PrismaService} from "../../prisma.service";
-import {CreateBookDto} from "./dto/createBook.dto";
-import {UpdateBookDto} from "./dto/updateBook.dto";
+import { CreateBookDto, UpdateBookDto } from "./dto/book.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { BookDocument } from "mongodb/schema";
 
 @Injectable()
 export class BookService {
-    constructor(private readonly prismaService: PrismaService) {}
-
-    async getAllBooks() {
-        return this.prismaService.book.findMany();
-    }
-
-    async getBookById(id: string) {
-        return this.prismaService.book.findUnique({
-            where: {id}
-        });
-    }
-
-    async getBookByTitle(title: string) {
-        return this.prismaService.book.findFirst({
-            where: {title}
-        });
-    }
-
-    async getBookByGenre(genre: string) {
-        return this.prismaService.book.findMany({
-            where: {genre}
-        });
-    }
-
+    constructor(@InjectModel('Book') private readonly bookModel: Model<BookDocument>) {}
+    
     async createBook(data: CreateBookDto) {
-        return this.prismaService.book.create({
-            data:{
-                ...data,
-                publishedAt: data.publishedAt
-            }});
+        const createdBook = new this.bookModel(data);
+        return createdBook.save();
     }
 
     async updateBook(id: string, data: UpdateBookDto) {
-        return this.prismaService.book.update({
-            where: {id},
-            data
-        });
+        return this.bookModel.findByIdAndUpdate(id, data, { new: true}).exec();
     }
-
-    async deleteBook(id: string) {
-        return this.prismaService.book.delete({
-            where: {id}
-        });
-    }
+    
 }

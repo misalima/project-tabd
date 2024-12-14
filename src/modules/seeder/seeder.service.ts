@@ -17,7 +17,7 @@ export class SeederService {
     await this.userModel.deleteMany();
     await this.reviewModel.deleteMany();
 
-    const users = Array.from({ length: 100 }).map(() => ({
+    const users = Array.from({ length: 10000 }).map(() => ({
       username: faker.internet.username(),
       email: faker.internet.email(),
       preferences: [faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror'])],
@@ -30,7 +30,7 @@ export class SeederService {
   async seedBooks() {
     await this.bookModel.deleteMany();
 
-    const books = Array.from({ length: 100 }).map(() => ({
+    const books = Array.from({ length: 10000 }).map(() => ({
       title: faker.commerce.productName(),
       author: faker.person.firstName(),
       genre: faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror']),
@@ -46,7 +46,7 @@ export class SeederService {
     const users = await this.userModel.find();
     const books = await this.bookModel.find();
 
-    const reviews = Array.from({ length: 100 }).map(() => ({
+    const reviews = Array.from({ length: 10000 }).map(() => ({
       rating: faker.number.int({ min: 1, max: 5 }),
       comment: faker.lorem.sentence(),
       bookId: books[faker.number.int({ min: 0, max: books.length - 1 })]._id,

@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema, BookSchema, ReviewSchema } from '../../../mongodb/schema';
 import {MongoController} from "./mongo.controller";
 import {MongoService} from "./mongo.service";
 
+@Global()
 @Module({
     imports: [
         MongooseModule.forFeature([

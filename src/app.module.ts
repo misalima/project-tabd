@@ -5,10 +5,15 @@ import { UserModule } from './modules/user/user.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SeederModule } from './modules/seeder/seeder.module';
 import {MongoModule} from "./modules/mongo/mongo.module";
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DATABASE_URL),
+    ConfigModule.forRoot({
+      isGlobal: true, // Make the module global
+      envFilePath: '.env',
+    }),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     MongoModule,
     BookModule,
     UserModule,
