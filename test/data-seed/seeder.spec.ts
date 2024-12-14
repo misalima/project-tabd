@@ -1,7 +1,7 @@
-import {SeederService} from "../../src/modules/seeder/seeder.service";
-import {Test, TestingModule} from "@nestjs/testing";
-import {AppModule} from "../../src/app.module";
-import {writeToJsonFile} from "../utils/fileUtils";
+import { SeederService } from "../../src/modules/seeder/seeder.service";
+import { Test, TestingModule } from "@nestjs/testing";
+import { AppModule } from "../../src/app.module";
+import { writeToJsonFile } from "../utils/fileUtils";
 
 describe('Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews)', () => {
     jest.setTimeout(30000);
@@ -17,11 +17,10 @@ describe('Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews
 
     it('Deve medir o tempo de inserção de usuários, livros e reviews', async () => {
         const startTime = performance.now();
-        await seederService.runSeed();
+        await seederService.runSeed(); // Realiza o seeding dos dados no MongoDB
         const endTime = performance.now();
 
         const duration = endTime - startTime;
-
         const testResults = {
             testSuite: 'Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews)',
             testName: 'Deve medir o tempo de inserção de usuários, livros e reviews',
@@ -29,7 +28,6 @@ describe('Teste de Performance - Inserção de Dados (Usuários, Livros, Reviews
         };
 
         writeToJsonFile(testResults);
-
         console.log(`Tempo de execução: ${duration}ms`);
     });
 });

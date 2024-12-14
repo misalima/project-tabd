@@ -1,108 +1,66 @@
-import {Injectable} from "@nestjs/common";
-import {PrismaService} from "../../prisma.service";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { faker } from '@faker-js/faker';
+import {BookDocument, ReviewDocument, UserDocument} from "../../../mongodb/schema";
 
 @Injectable()
 export class SeederService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+      @InjectModel('User') private readonly userModel: Model<UserDocument>,
+      @InjectModel('Book') private readonly bookModel: Model<BookDocument>,
+      @InjectModel('Review') private readonly reviewModel: Model<ReviewDocument>,
+  ) {}
 
   async seedUsers() {
-    // Optionally delete existing data (for a fresh seed)
-    await this.prismaService.review.deleteMany();
-    await this.prismaService.user.deleteMany();
+    await this.userModel.deleteMany();
+    await this.reviewModel.deleteMany();
 
-    const users = Array.from({ length: 10000 }).map(() => ({
-      username: faker.internet.userName(),
+    const users = Array.from({ length: 100 }).map(() => ({
+      username: faker.internet.username(),
       email: faker.internet.email(),
-      preferences: [
-        faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror']),
-      ],
+      preferences: [faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror'])],
     }));
 
-    // Loop through users and check if they already exist before creating
-    for (const user of users) {
-      let username = user.username;
-      let uniqueUsername = false;
-
-      // Check for unique username and generate a new one if needed
-      while (!uniqueUsername) {
-        const existingUserByUsername = await this.prismaService.user.findUnique(
-          {
-            where: {
-              username: username,
-            },
-          },
-        );
-
-        if (!existingUserByUsername) {
-          uniqueUsername = true;
-        } else {
-          // Generate a new username if the current one already exists
-          username = faker.internet.userName();
-        }
-      }
-
-      const existingUserByEmail = await this.prismaService.user.findUnique({
-        where: {
-          email: user.email,
-        },
-      });
-
-      if (!existingUserByEmail) {
-        // Only create user if they don't exist
-        await this.prismaService.user.create({
-          data: {
-            username: username,
-            email: user.email,
-            preferences: user.preferences,
-          },
-        });
-      }
-    }
-
+    await this.userModel.insertMany(users);
     console.log('Users seeded successfully');
   }
 
   async seedBooks() {
-    await this.prismaService.book.deleteMany();
+    await this.bookModel.deleteMany();
 
-    const books = Array.from({ length: 6000 }).map(() => ({
+    const books = Array.from({ length: 100 }).map(() => ({
       title: faker.commerce.productName(),
       author: faker.person.firstName(),
-      genre: faker.helpers.arrayElement([
-        'action',
-        'comedy',
-        'drama',
-        'horror',
-      ]),
+      genre: faker.helpers.arrayElement(['action', 'comedy', 'drama', 'horror']),
       description: faker.lorem.paragraph(),
       publishedAt: faker.date.past().toString(),
     }));
 
-    await this.prismaService.book.createMany({
-      data: books,
-    });
+    await this.bookModel.insertMany(books);
+    console.log('Books seeded successfully');
   }
 
   async seedReviews() {
-    const users = await this.prismaService.user.findMany();
-    const books = await this.prismaService.book.findMany();
+    const users = await this.userModel.find();
+    const books = await this.bookModel.find();
 
-    const reviews = Array.from({ length: 12000 }).map(() => ({
+    const reviews = Array.from({ length: 100 }).map(() => ({
       rating: faker.number.int({ min: 1, max: 5 }),
       comment: faker.lorem.sentence(),
-      bookId: books[faker.number.int({ min: 0, max: books.length - 1 })].id,
-      userId: users[faker.number.int({ min: 0, max: users.length - 1 })].id,
+      bookId: books[faker.number.int({ min: 0, max: books.length - 1 })]._id,
+      userId: users[faker.number.int({ min: 0, max: users.length - 1 })]._id,
     }));
 
-    await this.prismaService.review.createMany({
-      data: reviews,
-    });
+    await this.reviewModel.insertMany(reviews);
+    console.log('Reviews seeded successfully');
   }
 
   async runSeed() {
     await this.seedUsers();
     await this.seedBooks();
     await this.seedReviews();
+    console.log('All data seeded successfully');
   }
 }
